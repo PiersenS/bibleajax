@@ -1,8 +1,6 @@
 // Bible class function definitions
 // Computer Science, MVNU
 
-// temporary useless comment
-
 #include "Ref.h"
 #include "Verse.h"
 #include "Bible.h" 
