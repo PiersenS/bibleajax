@@ -32,13 +32,6 @@ using namespace std;
 #include "/home/class/csc3004/cgicc/HTMLClasses.h"
 using namespace cgicc;
 
-
-
-
-
-
-
-
 int main() {
   /* A CGI program must send a response header with content type
    * back to the web client before any other output.
