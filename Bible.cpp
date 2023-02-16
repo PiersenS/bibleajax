@@ -108,9 +108,8 @@ string Bible::error(LookupResult status) {
 	case NO_VERSE:
 		error = "Error: No Verse Found";
 		break;
-	default:
-		error = "Uknown Error";
 	}
+	
 	return error;
 }
 

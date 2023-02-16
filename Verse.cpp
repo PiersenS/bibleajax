@@ -44,5 +44,5 @@ Ref Verse::getRef() {
 void Verse::display() {
     //verseRef.display();
 
-    cout << verseRef.getVerse() << " " << verseText;
+    cout << "(" << verseRef.getVerse() << ")" << " " << verseText;
  }
