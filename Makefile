@@ -18,20 +18,28 @@ USER= pieschuiling
 CC= g++
 CFLAGS= -g -std=c++11
 
-all:	bibleajax.cgi PutCGI PutHTML
+#all:	bibleajax.cgi PutCGI PutHTML
+all: testreader
 
 # TO DO: For bibleajax.cgi, add dependencies to include
 # compiled classes from Project 1 to be linked into the executable program
-bibleajax.cgi:	bibleajax.o Ref.o Verse.o Bible.o
-		$(CC) $(CFLAGS) -o bibleajax.cgi bibleajax.o Ref.o Verse.o Bible.o -lcgicc
+#bibleajax.cgi:	bibleajax.o Ref.o Verse.o Bible.o
+#		$(CC) $(CFLAGS) -o bibleajax.cgi bibleajax.o Ref.o Verse.o Bible.o -lcgicc
 		# -l option is necessary to link with cgicc library
 
+
 # main program to handle AJAX/CGI requests for Bible references
-bibleajax.o:	bibleajax.cpp Ref.h Verse.h Bible.h
-		$(CC) $(CFLAGS) -c bibleajax.cpp
+#bibleajax.o:	bibleajax.cpp Ref.h Verse.h Bible.h
+#		$(CC) $(CFLAGS) -c bibleajax.cpp
 
 # TO DO: copy targets to build classes from Project 1:
 # Bible.o, Ref.o, Verse.o
+
+testreader: 	testreader.o Bible.o Ref.o Verse.o
+		$(CC) $(CFLAGS) -o testreader Ref.o Verse.o Bible.o testreader.o
+
+testreader.o: 	testreader.cpp Ref.h Verse.h Bible.h
+		$(CC) $(CFLAGS) -c testreader.cpp
 
 # Ref Object
 Ref.o : Ref.h Ref.cpp
@@ -45,18 +53,19 @@ Verse.o : Ref.h Verse.h Verse.cpp
 Bible.o : Ref.h Verse.h Bible.h Bible.cpp
 	$(CC) $(CFLAGS) -c Bible.cpp
 			
-PutCGI:	bibleajax.cgi
-		chmod 755 bibleajax.cgi
-		cp bibleajax.cgi /var/www/html/class/csc3004/$(USER)/cgi-bin
+#PutCGI:	bibleajax.cgi
+#		chmod 755 bibleajax.cgi
+#		cp bibleajax.cgi /var/www/html/class/csc3004/$(USER)/cgi-bin
+#
+#		echo "Current contents of your cgi-bin directory: "
+#		ls -l /var/www/html/class/csc3004/$(USER)/cgi-bin/
 
-		echo "Current contents of your cgi-bin directory: "
-		ls -l /var/www/html/class/csc3004/$(USER)/cgi-bin/
-
-PutHTML:
-		cp bibleajax.html /var/www/html/class/csc3004/$(USER)
-
-		echo "Current contents of your HTML directory: "
-		ls -l /var/www/html/class/csc3004/$(USER)
+#PutHTML:
+#		cp bibleajax.html /var/www/html/class/csc3004/$(USER)
+#
+#		echo "Current contents of your HTML directory: "
+#		ls -l /var/www/html/class/csc3004/$(USER)
 
 clean:		
-		rm *.o core bibleajax.cgi
+		#rm *.o core bibleajax.cgi
+		rm *.o core testreader

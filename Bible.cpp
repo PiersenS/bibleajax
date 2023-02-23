@@ -13,14 +13,40 @@ using namespace std;
 
 Bible::Bible() { // Default constructor
 	infile = "/home/class/csc3004/Bibles/web-complete";
-	//infile = "web-complete";
+	//infile = "C:\\Users\\piers\\School\\SoftwareDevelopment\\BibleVersions\\web-complete";  // personal copy of Bible
+	instream.open(infile);	// add check if file opened
+	isOpen = true;
+	buildIndex();
 }
 
 // Constructor – pass bible filename
 Bible::Bible(const string s) { 
 	infile = s; 
-	isOpen = false;
+	instream.open(infile);
+	isOpen = true;
+	buildIndex();
 }
+
+// stores location of Ref objects in a map
+void Bible::buildIndex() {
+	// Strategy: Call nextVerse() until end of file. Parse verse from each call into Ref object, put Ref into map with file position from infile.tellg()
+	// Repeat.
+
+	// consider using LookupResult enum to tell if end of file has been reached. 
+
+	LookupResult result = OTHER;
+	Verse current; 
+	streampos position;
+
+	while (!instream.fail()) {
+		position = instream.tellg();
+		current = nextVerse(result);
+		references[current.getRef()] = position;
+	}
+
+}
+
+//Ref Bible::searchIndex(Ref ref, LookupResult& status) {}
 
 // REQUIRED: lookup finds a given verse in this Bible
 Verse Bible::lookup(Ref ref, LookupResult& status) { 
@@ -29,9 +55,10 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 		status = NO_BOOK;
 		return Verse();
 	}
-
-	instream.open(infile);
-	isOpen = true;
+	if (!instream.is_open()) {
+		instream.open(infile);
+		isOpen = true;
+	}
 	bool bookFound = false, chapFound = false, verseFound = false; // found book, chapter, verse
 	string line;
     // TODO: scan the file to retrieve the line that holds ref ...
@@ -78,7 +105,6 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 // If the file is not open, open the file and return the first verse.
 Verse Bible::nextVerse(LookupResult& status) {
 	string nextLine;
-	status = SUCCESS;
 	if (isOpen) {
 		getline(instream, nextLine);
 		if (nextLine == "") {
@@ -91,6 +117,7 @@ Verse Bible::nextVerse(LookupResult& status) {
 		instream.open(infile);
 		getline(instream, nextLine);
 	}
+	status = SUCCESS;
 	Verse nextVerse(nextLine);
 	return nextVerse;
 }

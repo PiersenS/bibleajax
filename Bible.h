@@ -16,6 +16,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <map>
 using namespace std;
 
 // status codes to be returned when looking up a reference
@@ -23,6 +24,9 @@ enum LookupResult { SUCCESS, NO_BOOK, NO_CHAPTER, NO_VERSE, OTHER };
 
 class Bible {	// A class to represent a version of the bible
  private:
+   void buildIndex(); // builds map containing locations of Ref objects
+   //Ref searchIndex(Ref ref, LookupResult& status); // finds Ref in map containing desired verse
+   map<Ref, int> references;
    string infile;		// file path name
    ifstream instream;	// input stream, used when file is open
    bool isOpen;			// true if file is open
@@ -36,7 +40,6 @@ class Bible {	// A class to represent a version of the bible
    
    // REQUIRED: Find and return a verse in this Bible, given a reference
    Verse lookup(const Ref ref, LookupResult& status);
-   //vector<Verse>* lookup(Ref ref, const int last, LookupResult& status);
 
    // REQUIRED:
    // Return the next verse from the Bible file stream if the file is open.
@@ -54,5 +57,6 @@ class Bible {	// A class to represent a version of the bible
    // OPTIONAL: Return the reference before the given parameter ref
    Ref prev(const Ref ref, LookupResult& status);
    Ref getNextRef() { return nextRef; }
+   map<Ref, int> getReferences() { return references; }
 };
 #endif //Bible_H
