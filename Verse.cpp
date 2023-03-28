@@ -29,7 +29,12 @@ Verse::Verse(const string s) {
 
     verseRef = Ref(book, chap, verse);
     verseText = rtext;
-}  	
+}
+
+Verse::Verse(const string s, const Ref ref) {
+    verseText = s;
+    verseRef = ref;
+}
 
 // REQUIRED: Accessors
 string Verse::getVerse() {

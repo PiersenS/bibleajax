@@ -5,6 +5,7 @@
 #include "Verse.h"
 #include "Bible.h" 
 #include <iostream>
+#include <istream>
 #include <fstream>
 #include <string>
 #include <stdio.h>
@@ -15,7 +16,12 @@ Bible::Bible() { // Default constructor
 	infile = "/home/class/csc3004/Bibles/web-complete";
 	//infile = "C:\\Users\\piers\\School\\SoftwareDevelopment\\BibleVersions\\web-complete";  // personal copy of Bible
 	instream.open(infile);	// add check if file opened
-	isOpen = true;
+	if (instream.is_open()) {
+		isOpen = true;
+	}
+	else {
+		isOpen = false;
+	}
 	buildIndex();
 }
 
@@ -23,7 +29,12 @@ Bible::Bible() { // Default constructor
 Bible::Bible(const string s) { 
 	infile = s; 
 	instream.open(infile);
-	isOpen = true;
+	if (instream.is_open()) {
+		isOpen = true;
+	}
+	else {
+		isOpen = false;
+	}
 	buildIndex();
 }
 
@@ -33,17 +44,31 @@ void Bible::buildIndex() {
 	// Repeat.
 
 	// consider using LookupResult enum to tell if end of file has been reached. 
-
-	LookupResult result = OTHER;
-	Verse current; 
-	streampos position;
-
-	while (!instream.fail()) {
-		position = instream.tellg();
-		current = nextVerse(result);
-		references[current.getRef()] = position;
+	if (!isOpen) {
+		cout << "Could not find file." << endl;
 	}
 
+	string nextLine;
+	LookupResult result = OTHER;
+	Verse current;
+	streampos position;
+
+	/*
+	while (!instream.eof()) {
+		position = instream.tellg();
+		current = nextVerse(result);
+		refIndex[current.getRef()] = position;
+	}
+	*/
+
+	while (!instream.eof()) {
+		position = instream.tellg();
+		if (getline(instream, nextLine)) {
+			//parse to Verse and store in index
+			Verse currentVerse(nextLine);
+			refIndex[currentVerse.getRef()] = position;
+		}
+	}
 }
 
 //Ref Bible::searchIndex(Ref ref, LookupResult& status) {}
@@ -55,49 +80,39 @@ Verse Bible::lookup(Ref ref, LookupResult& status) {
 		status = NO_BOOK;
 		return Verse();
 	}
-	if (!instream.is_open()) {
-		instream.open(infile);
-		isOpen = true;
-	}
-	bool bookFound = false, chapFound = false, verseFound = false; // found book, chapter, verse
-	string line;
-    // TODO: scan the file to retrieve the line that holds ref ...
-    // update the status variable
-	status = OTHER; // placeholder until retrieval is attempted
-	do {
-		getline(instream, line);
-		if (line == "")
-			break;
 
-		Ref cur(line);	// Ref of current line being read in
+	/* Strategy: 
+		check if ref exists in map, extract streampos
+		use seekg(streampos) to find verse text in Bible
+		parse text to verse, return verse
+	*/
+	streampos startpos = 0;
 
-		if (cur.getBook() == ref.getBook())
-			bookFound = true;
-		if (cur.getBook() == ref.getBook() && cur.getChap() == ref.getChap())
-			chapFound = true;
-		if (cur.getBook() == ref.getBook() && cur.getChap() == ref.getChap() && cur.getVerse() == ref.getVerse())
-			verseFound == true;
+	if (refIndex.find(ref) != refIndex.end()) {
+		// ref is found
+		startpos = refIndex[ref];
+		instream.clear();
+		instream.seekg(startpos); // set position to start reading file
 
-		if (cur == ref) {	// compare objects
-			status = SUCCESS;
-		}
+		string verseText;
+		getline(instream, verseText);
+		
+		Verse verse(verseText); 
 
-	} while (!instream.eof() && status != SUCCESS);
-	if (status != SUCCESS) {
-		if (bookFound && chapFound)
-			status = NO_VERSE;
-		else if (bookFound)
-			status = NO_CHAPTER;
-		else
-			status = NO_BOOK;
-	}
-
-	// create and return the verse object
-	if (line == "")
-		return Verse();
-	else {
-		Verse verse(line);
+		status = SUCCESS;
 		return verse;
+	}
+	else if (refIndex.find(Ref(ref.getBook(), ref.getChap(), 1)) != refIndex.end()) {
+		status = NO_VERSE;
+		return Verse();
+	}
+	else if (refIndex.find(Ref(ref.getBook(), 1, 1)) != refIndex.end()) {
+		status = NO_CHAPTER;
+		return Verse();
+	}
+	else {
+		status = NO_BOOK;
+		return Verse();
 	}
 }
 
@@ -146,10 +161,15 @@ void Bible::display() {
 	
 // OPTIONAL access functions
 // OPTIONAL: Return the reference after the given ref
-/*
+
 Ref Bible::next(const Ref ref, LookupResult& status) {
+	map<Ref, int>::iterator iter = refIndex.find(ref);
+	iter++;
+	status = SUCCESS;
+	return iter->first;
 }
 
+/*
 // OPTIONAL: Return the reference before the given ref
 Ref Bible::prev(const Ref ref, LookupResult& status) {
 }

@@ -26,7 +26,7 @@ class Bible {	// A class to represent a version of the bible
  private:
    void buildIndex(); // builds map containing locations of Ref objects
    //Ref searchIndex(Ref ref, LookupResult& status); // finds Ref in map containing desired verse
-   map<Ref, int> references;
+   map<Ref, int> refIndex;
    string infile;		// file path name
    ifstream instream;	// input stream, used when file is open
    bool isOpen;			// true if file is open
@@ -57,6 +57,6 @@ class Bible {	// A class to represent a version of the bible
    // OPTIONAL: Return the reference before the given parameter ref
    Ref prev(const Ref ref, LookupResult& status);
    Ref getNextRef() { return nextRef; }
-   map<Ref, int> getReferences() { return references; }
+   map<Ref, int> getRefIndex() { return refIndex; }
 };
 #endif //Bible_H

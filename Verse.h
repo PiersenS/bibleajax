@@ -22,8 +22,8 @@ class Verse {
    Verse();   	// Default constructor
    
    // REQUIRED: implement parse constructor
-   Verse(const string s);
-		// pass entire line from file including reference and text
+   Verse(const string s);   // pass entire line from file including reference and text
+   Verse(const string s, const Ref ref);    // pass versetext and reference
 
    // REQUIRED: implement accessor functions
    string getVerse();
