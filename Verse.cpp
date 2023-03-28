@@ -51,3 +51,7 @@ void Verse::display() {
 
     cout << "(" << verseRef.getVerse() << ")" << " " << verseText;
  }
+ 
+ void Verse::displayVerseText() {
+    cout << verseText;
+ }

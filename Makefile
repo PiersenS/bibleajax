@@ -40,6 +40,10 @@ testreader: 	testreader.o Bible.o Ref.o Verse.o
 
 testreader.o: 	testreader.cpp Ref.h Verse.h Bible.h
 		$(CC) $(CFLAGS) -c testreader.cpp
+	
+#Pipe
+fifo.0: fifo.h fifo.cpp
+	$(CC) $(CFLAGS) -c fifo.cpp
 
 # Ref Object
 Ref.o : Ref.h Ref.cpp

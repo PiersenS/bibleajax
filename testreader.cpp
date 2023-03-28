@@ -30,11 +30,7 @@ int main(int argc, char **argv) {
     map<Ref, int>::iterator iter = refs.begin();
 
     Verse verse;
-	int b, c, v;
-	if (argc > 4) {
-        cout << "Too Many Arguments!" << endl;
-        return 0;
-    }
+	int b, c, v, numVerses = 1;
 	LookupResult result;
 
     if (argc < 4) {
@@ -45,6 +41,9 @@ int main(int argc, char **argv) {
 	b = atoi(argv[1]);
 	c = atoi(argv[2]);
 	v = atoi(argv[3]);
+    if (argc > 4) {
+        numVerses = atoi(argv[4]);
+    }
 
 	// Create a reference from the numbers
 	Ref ref(b, c, v);
@@ -53,8 +52,20 @@ int main(int argc, char **argv) {
 
     verse = webBible.lookup(ref, result);
     if (result == SUCCESS) {    
-        verse.display();
+        verse.displayVerseText();
         cout << endl;
+        if (numVerses > 1) {
+            for (int i = 0; i < (numVerses - 1); i++) {
+		    	verse = webBible.nextVerse(result);
+		    	// check result
+		    	if (result != SUCCESS) {
+		    		cout << webBible.error(result) << endl;
+		    		break;
+		    	}
+		    	verse.display();
+		    	cout << endl;
+		    }
+        }
     }
     else if (result == NO_VERSE) {
         cout << "Verse Not Found." << endl;
@@ -65,38 +76,6 @@ int main(int argc, char **argv) {
     else {
         cout << "Book Not Found." << endl;
     }
-
-
-
-
-    /*
-    for (int i = 0; i < 4; i++) {
-        Ref r = iter->first;
-        cout << r.getBook() << " " << r.getChap() << " " << r.getVerse();
-        cout << " at position: " << iter->second << endl;
-        iter++;
-    }
-
-    //Print Genesis Refs
-    /*
-    while (iter->first.getBook() < 2) {
-        Ref r = iter->first;
-        cout << r.getBook() << " " << r.getChap() << " " << r.getVerse();
-        cout << " at position: " << iter->second << endl;
-        iter++;
-    }
-    */
-    
-
-
-    // Print entire map 
-    /*
-    while (iter != refs.end()) {
-        Ref r = iter->second;
-        cout << r.getBook() << " " << r.getChap() << " " << r.getVerse() << endl;
-        iter++;
-    }
-    */
 
     return 0;
 }
