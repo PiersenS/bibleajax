@@ -13,6 +13,7 @@
 using namespace std;
 
 Bible::Bible() { // Default constructor
+	indexCreated = false;
 	infile = "/home/class/csc3004/Bibles/web-complete";
 	//infile = "C:\\Users\\piers\\School\\SoftwareDevelopment\\BibleVersions\\web-complete";  // personal copy of Bible
 	instream.open(infile);	// add check if file opened
@@ -27,6 +28,7 @@ Bible::Bible() { // Default constructor
 
 // Constructor – pass bible filename
 Bible::Bible(const string s) { 
+	indexCreated = false;
 	infile = s; 
 	instream.open(infile);
 	if (instream.is_open()) {
@@ -53,14 +55,6 @@ void Bible::buildIndex() {
 	Verse current;
 	streampos position;
 
-	/*
-	while (!instream.eof()) {
-		position = instream.tellg();
-		current = nextVerse(result);
-		refIndex[current.getRef()] = position;
-	}
-	*/
-
 	while (!instream.eof()) {
 		position = instream.tellg();
 		if (getline(instream, nextLine)) {
@@ -69,9 +63,8 @@ void Bible::buildIndex() {
 			refIndex[currentVerse.getRef()] = position;
 		}
 	}
+	indexCreated = true;
 }
-
-//Ref Bible::searchIndex(Ref ref, LookupResult& status) {}
 
 // REQUIRED: lookup finds a given verse in this Bible
 Verse Bible::lookup(Ref ref, LookupResult& status) { 

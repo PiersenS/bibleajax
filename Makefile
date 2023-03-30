@@ -19,13 +19,13 @@ CC= g++
 CFLAGS= -g -std=c++11
 
 #all:	bibleajax.cgi PutCGI PutHTML
-all: testreader
+all: lookupserver lookupclient
 
 # TO DO: For bibleajax.cgi, add dependencies to include
 # compiled classes from Project 1 to be linked into the executable program
 #bibleajax.cgi:	bibleajax.o Ref.o Verse.o Bible.o
 #		$(CC) $(CFLAGS) -o bibleajax.cgi bibleajax.o Ref.o Verse.o Bible.o -lcgicc
-		# -l option is necessary to link with cgicc library
+# -l option is necessary to link with cgicc library
 
 
 # main program to handle AJAX/CGI requests for Bible references
@@ -35,14 +35,28 @@ all: testreader
 # TO DO: copy targets to build classes from Project 1:
 # Bible.o, Ref.o, Verse.o
 
-testreader: 	testreader.o Bible.o Ref.o Verse.o
-		$(CC) $(CFLAGS) -o testreader Ref.o Verse.o Bible.o testreader.o
+#testreader: 	testreader.o Bible.o Ref.o Verse.o
+#		$(CC) $(CFLAGS) -o testreader Ref.o Verse.o Bible.o testreader.o
+#
+#testreader.o: 	testreader.cpp Ref.h Verse.h Bible.h
+#		$(CC) $(CFLAGS) -c testreader.cpp
 
-testreader.o: 	testreader.cpp Ref.h Verse.h Bible.h
-		$(CC) $(CFLAGS) -c testreader.cpp
+#Server-Side lookup
+lookupserver: 	lookupserver.o fifo.o Bible.o Ref.o Verse.o
+	$(CC) $(CFLAGS) -o lookupserver fifo.o Ref.o Verse.o Bible.o lookupserver.o
+
+lookupserver.o: lookupserver.cpp fifo.h Ref.h Verse.h Bible.h
+	$(CC) $(CFLAGS) -c lookupserver.cpp
+
+#Client-Side lookup
+lookupclient: lookupclient.o fifo.o
+	$(CC) $(CFLAGS) -o lookupclient fifo.o lookupclient.o
+
+lookupclient.o: lookupclient.cpp fifo.h
+	$(CC) $(CFLAGS) -c lookupclient.cpp
 	
 #Pipe
-fifo.0: fifo.h fifo.cpp
+fifo.o: fifo.h fifo.cpp
 	$(CC) $(CFLAGS) -c fifo.cpp
 
 # Ref Object
@@ -71,5 +85,6 @@ Bible.o : Ref.h Verse.h Bible.h Bible.cpp
 #		ls -l /var/www/html/class/csc3004/$(USER)
 
 clean:		
-		#rm *.o core bibleajax.cgi
-		rm *.o core testreader
+#rm *.o core bibleajax.cgi
+		rm *.o core lookupserver
+		rm *.0 core lookupclient

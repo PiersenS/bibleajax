@@ -26,6 +26,7 @@ public:
    Ref(const int,const int,const int); 	// Construct from three integers;
    // Accessors
    int getBook() const;	// Access book number
+   string getBookName();
    int getChap() const;	// Access chapter number
    int getVerse() const;	// Access verse number
    // REQUIRED Comparison: determine if two references are equal
@@ -37,6 +38,7 @@ public:
    
    // REQUIRED: Display the reference on cout, example output: John 3:16
    void display();
+   string displayString();
    // Your version of display should show the book name
    // corresponding to the stored book number.
 };

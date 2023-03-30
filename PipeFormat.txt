@@ -1,0 +1,10 @@
+Request Pipe Format: BookNumber&ChapterNumber&BookNumber
+    Example: 1&1&1
+        Read as: Genesis 1:1
+    2&22&13 = Exodus 22:13
+
+
+Reply Pipe Format: SuccessStatus&BookName&ChapterNumber&(VerseNumber)&VerseText
+    Example: SUCCESS&Genesis&1&(1)&In the beginning...
+
+    Output end result: Genesis 1 (1) In the beginning...

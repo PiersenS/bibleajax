@@ -24,6 +24,8 @@ enum LookupResult { SUCCESS, NO_BOOK, NO_CHAPTER, NO_VERSE, OTHER };
 
 class Bible {	// A class to represent a version of the bible
  private:
+   bool indexCreated;
+
    void buildIndex(); // builds map containing locations of Ref objects
    //Ref searchIndex(Ref ref, LookupResult& status); // finds Ref in map containing desired verse
    map<Ref, int> refIndex;
@@ -58,5 +60,6 @@ class Bible {	// A class to represent a version of the bible
    Ref prev(const Ref ref, LookupResult& status);
    Ref getNextRef() { return nextRef; }
    map<Ref, int> getRefIndex() { return refIndex; }
+   bool isIndexCreated() { return indexCreated; }
 };
 #endif //Bible_H
