@@ -22,7 +22,7 @@ int main() {
     
     
     string clientRequest;
-    string message;
+    string replyMess;
 
     requestPipe.openread();
     replyPipe.openwrite();
@@ -58,8 +58,16 @@ int main() {
 
         // TODO: convert to print to pipe instead of standard output
         verse = webBible.lookup(ref, result);
-        if (result == SUCCESS) {    
-            replyPipe.send(verse.getVerse());
+        Ref verseRef = verse.getRef();
+        if (result == SUCCESS) {
+            replyMess = to_string(result) + "&" +
+                        verseRef.getBookName() + "&" + 
+                        to_string(verseRef.getChap()) + "&(" + 
+                        to_string(verseRef.getVerse()) + ")&" +
+                        verse.getVerse() + "&";
+
+
+            replyPipe.send(replyMess);
             if (numVerses > 1) {
                 for (int i = 0; i < (numVerses - 1); i++) {
 	    	    	verse = webBible.nextVerse(result);
@@ -68,20 +76,25 @@ int main() {
 	    	    		cout << webBible.error(result) << endl;
 	    	    		break;
 	    	    	}
-	    	    	replyPipe.send(verse.getVerse());
+                    verseRef = verse.getRef();
+                    replyMess = result + "&" +
+                                verseRef.getBookName() + "&" + 
+                                to_string(verseRef.getChap()) + "&(" + 
+                                to_string(verseRef.getVerse()) + ")&" +
+                                verse.getVerse() + "&";
+	    	    	replyPipe.send(replyMess);
 	    	    }
             }
         }
         else if (result == NO_VERSE) {
-            cout << "Verse Not Found." << endl;
+            replyPipe.send(to_string(result) + "&");
         }
         else if (result == NO_CHAPTER) {
-            cout << "Chapter Not Found." << endl;
+            replyPipe.send(to_string(result) + "&");
         }
         else {
-            cout << "Book Not Found." << endl;
+            replyPipe.send(to_string(result) + "&");
         }
-        // send on reply pipe
 
     }
     requestPipe.fifoclose();
