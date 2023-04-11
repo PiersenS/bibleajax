@@ -26,6 +26,7 @@ int main() {
 
     requestPipe.openread();
     replyPipe.openwrite();
+    //replyPipe.send(""); // try to send something to replyPipe to ensure that programs start
 
     while(true) {
         //read from request pipe
@@ -62,27 +63,30 @@ int main() {
         if (result == SUCCESS) {
             replyMess = to_string(result) + "&" +
                         verseRef.getBookName() + "&" + 
-                        to_string(verseRef.getChap()) + "&(" + 
-                        to_string(verseRef.getVerse()) + ")&" +
+                        to_string(verseRef.getChap()) + "&" + 
+                        to_string(verseRef.getVerse()) + "&" +
                         verse.getVerse() + "&";
 
-
             replyPipe.send(replyMess);
+            //cout << "replyMess = " << replyMess << endl;
+            //cout << "numVerses = " << numVerses << endl;
             if (numVerses > 1) {
                 for (int i = 0; i < (numVerses - 1); i++) {
 	    	    	verse = webBible.nextVerse(result);
 	    	    	// check result
 	    	    	if (result != SUCCESS) {
-	    	    		cout << webBible.error(result) << endl;
+	    	    		//cout << webBible.error(result) << endl;
 	    	    		break;
 	    	    	}
                     verseRef = verse.getRef();
-                    replyMess = result + "&" +
+                    replyMess = to_string(result) + "&" +
                                 verseRef.getBookName() + "&" + 
-                                to_string(verseRef.getChap()) + "&(" + 
-                                to_string(verseRef.getVerse()) + ")&" +
+                                to_string(verseRef.getChap()) + "&" +
+                                to_string(verseRef.getVerse()) + "&" +
                                 verse.getVerse() + "&";
 	    	    	replyPipe.send(replyMess);
+                    //cout << "message (" << i << ") sent on reply pipe!" << endl;
+                    //cout << "replyMess = " << replyMess << endl;
 	    	    }
             }
         }

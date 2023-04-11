@@ -19,11 +19,11 @@ Fifo::Fifo(){
 }
 
 Fifo::Fifo(string name){
-  cout << "Fifo(string) entered." << endl; 
+  //cout << "Fifo(string) entered." << endl; 
   // create a named pipe (FIFO)
   // build the name string
   pipename = PATH + SIG + name;
-  cout << "pipename = " << pipename << endl;
+  //cout << "pipename = " << pipename << endl;
 
   umask(0);
   // Create (or open) the fifo
@@ -33,7 +33,7 @@ Fifo::Fifo(string name){
     cout << "Error creating pipe: " << name << endl;
     return;
   }
-  cout << "Success creating pipe: " << name << endl;
+  //cout << "Success creating pipe: " << name << endl;
   fd = 0;
   return;
 }
